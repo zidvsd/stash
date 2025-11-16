@@ -3,14 +3,13 @@ import Link from "next/link";
 import { navItems } from "@/lib/navs";
 import { usePathname } from "next/navigation";
 import { PanelLeft } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { DarkModeToggle } from "../DarkModeToggle";
-const supabase = createClient();
 export default function Sidebar({
   isCollapsed = false,
   toggleCollapse,

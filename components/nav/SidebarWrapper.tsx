@@ -7,7 +7,7 @@ export default function SidebarWrapper() {
 
   return (
     <div
-      className={`hidden md:block bg-card border-r border-r-neutral-300 dark:border-r-transparent  transition-all duration-300 ${
+      className={`hidden md:block bg-card border-r border-r-gray-300 dark:border-r-transparent  transition-all duration-300 ${
         isCollapsed ? "w-auto" : "w-60"
       }`}
     >

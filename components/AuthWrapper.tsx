@@ -1,6 +1,6 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Session } from "@supabase/supabase-js";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout";
@@ -10,7 +10,6 @@ type AuthWrapperProps = {
 };
 export default function AuthWrapper({ children }: AuthWrapperProps) {
   const [session, setSession] = useState<Session | null>(null);
-  const supabase = createClient();
   const router = useRouter();
   const pathname = usePathname();
   useEffect(() => {

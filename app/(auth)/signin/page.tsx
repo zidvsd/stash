@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 import Logo from "@/components/Logo";
-const supabase = createClient();
 
 export default function page() {
   const router = useRouter();
