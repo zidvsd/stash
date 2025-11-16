@@ -5,11 +5,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "motion/react";
+import Logo from "@/components/Logo";
 const supabase = createClient();
 
 export default function page() {
@@ -35,11 +42,20 @@ export default function page() {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="flex min-h-screen items-center w-full justify-center custom-container"
+      className="flex min-h-screen items-center w-full justify-center custom-container  "
     >
       <Card className="w-full max-w-md">
+        <div className="self-center">
+          <Logo />
+        </div>
         <CardHeader>
-          <CardTitle className="text-center">Sign Up</CardTitle>
+          <CardTitle className="text-center text-xl">
+            Create an account
+          </CardTitle>
+          <CardDescription className="text-center">
+            {" "}
+            Get started with your finance tracking{" "}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
@@ -68,7 +84,12 @@ export default function page() {
               />
             </div>
 
-            <Button type="submit" className="w-full mt-2" disabled={signingIn}>
+            <Button
+              type="submit"
+              variant={"accent"}
+              className="w-full mt-2 hover-utility cursor-pointer bg-accent"
+              disabled={signingIn}
+            >
               {signingIn ? "Signing Up..." : "Sign Up"}
             </Button>
 

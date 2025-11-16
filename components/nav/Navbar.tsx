@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PanelLeft } from "lucide-react";
 import Sidebar from "./Sidebar";
 import { motion, AnimatePresence } from "motion/react";
+import Logo from "../Logo";
 
 export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // mobile
@@ -10,7 +11,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="custom-container border-b border-b-neutral-300 py-4 flex items-center justify-between">
+      <div className="custom-container border-b border-b-neutral-300 dark:border-b-neutral-700 py-4 flex items-center justify-between">
         {/* Mobile toggle */}
         <button
           className="p-2 md:hidden rounded-md hover:bg-gray-200 dark:hover:bg-neutral-700 cursor-pointer hover-utility"
@@ -18,6 +19,9 @@ export default function Navbar() {
         >
           <PanelLeft className="w-5 h-5" />
         </button>
+        <div className="">
+          <Logo />
+        </div>
       </div>
 
       {/* Mobile sidebar */}
@@ -29,7 +33,7 @@ export default function Navbar() {
             exit={{ x: -50, opacity: 0 }}
             className="fixed inset-0 z-50 flex md:hidden"
           >
-            <div className="w-64 bg-card border-r border-r-neutral-300">
+            <div className=" bg-card border-r border-r-neutral-300 dark:border-r-neutral-700">
               <Sidebar onMobileLinkClick={() => setIsSidebarOpen(false)} />
             </div>
             <div

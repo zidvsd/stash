@@ -9,6 +9,7 @@ import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { DarkModeToggle } from "../DarkModeToggle";
 const supabase = createClient();
 export default function Sidebar({
   isCollapsed = false,
@@ -33,7 +34,7 @@ export default function Sidebar({
   };
   return (
     <aside
-      className={`h-screen flex flex-col py-4 px-2 ${
+      className={`dark:bg-sidebar-primary h-screen flex flex-col py-4 px-2 ${
         isCollapsed ? "w-12" : "w-60"
       } transition-width duration-300`}
     >
@@ -43,7 +44,7 @@ export default function Sidebar({
         {/* Collapse button only visible on md+ */}
         <button
           onClick={toggleCollapse}
-          className="p-1 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-md hidden md:block cursor-pointer"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-accent hover-utility rounded-md hidden md:block cursor-pointer"
         >
           <PanelLeft className="w-5 h-5" />
         </button>
@@ -60,8 +61,10 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               onClick={() => onMobileLinkClick?.()} // only closes on mobile
-              className={`flex items-center gap-2 p-2 rounded-md hover:bg-gray-200 dark:hover:bg-neutral-700 ${
-                isActive ? "bg-gray-300 dark:bg-neutral-700 font-semibold" : ""
+              className={`flex items-center gap-2 p-2 rounded-md hover:bg-gray-200 hover-utility dark:hover:bg-accent ${
+                isActive
+                  ? "bg-gray-300 dark:bg-accent dark:text-white font-semibold"
+                  : ""
               }`}
             >
               <Icon className="h-5 w-5" />
@@ -70,9 +73,17 @@ export default function Sidebar({
           );
         })}
       </nav>
-
       {/* logout */}
-      <div className="mt-auto">
+
+      <div className="mt-auto space-y-2">
+        {/* dark mode toggle  */}
+
+        <div className="flex items-center gap-2">
+          {/* Collapse button only visible on md+ */}
+          <DarkModeToggle />
+          {!isCollapsed && <h2 className=" ">Theme</h2>}
+        </div>
+
         <Button
           variant="destructive"
           size="sm"

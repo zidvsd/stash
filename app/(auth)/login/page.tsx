@@ -5,10 +5,17 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 import { motion } from "motion/react";
 const supabase = createClient();
 
@@ -45,8 +52,15 @@ export default function page() {
       className="flex min-h-screen items-center w-full justify-center custom-container"
     >
       <Card className="w-full max-w-md">
+        <div className="self-center">
+          <Logo />
+        </div>
         <CardHeader>
-          <CardTitle className="text-center">Login</CardTitle>
+          <CardTitle className="text-center text-xl">Welcome Back</CardTitle>
+          <CardDescription className="text-center">
+            {" "}
+            Sign in to your account to continue
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -77,7 +91,12 @@ export default function page() {
               />
             </div>
 
-            <Button type="submit" className="w-full mt-2" disabled={loading}>
+            <Button
+              variant={"accent"}
+              type="submit"
+              className="w-full mt-2 hover-utility cursor-pointer bg-accent"
+              disabled={loading}
+            >
               {loading ? "Signing In..." : "Sign In"}
             </Button>
 

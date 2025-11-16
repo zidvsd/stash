@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import AuthWrapper from "@/components/AuthWrapper";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -20,10 +21,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className="" lang="en">
+    <html className="" suppressHydrationWarning lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <AuthWrapper>{children}</AuthWrapper>
-        <Toaster position="top-right" />
+        <ThemeProvider
+          attribute={"class"}
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthWrapper>{children}</AuthWrapper>
+          <Toaster position="top-right" />
+        </ThemeProvider>
       </body>
     </html>
   );
