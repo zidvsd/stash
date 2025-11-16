@@ -61,6 +61,7 @@ export default function page() {
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
+                className="mt-2"
                 autoComplete="off"
                 id="email"
                 type="email"
@@ -74,6 +75,7 @@ export default function page() {
             <div>
               <Label htmlFor="password">Password</Label>
               <Input
+                className="mt-2"
                 id="password"
                 type="password"
                 placeholder="Your password"
