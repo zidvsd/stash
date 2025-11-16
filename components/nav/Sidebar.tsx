@@ -25,12 +25,18 @@ export default function Sidebar({
   const [loggingOut, setLoggingOut] = useState(false);
   const handleLogout = async () => {
     setLoggingOut(true);
-    const { error } = await supabase.auth.signOut();
-    toast.success("Logged out successfully.");
-    setLoggingOut(false);
 
-    if (error) return toast.error("Logout failed. Please try again.");
-    router.push("/login");
+    try {
+      const { error } = await supabase.auth.signOut(); // uses correct client
+      if (error) throw error;
+
+      toast.success("Logged out successfully.");
+      router.push("/login");
+    } catch (err: any) {
+      toast.error("Logout failed: " + err.message);
+    } finally {
+      setLoggingOut(false);
+    }
   };
   return (
     <aside
@@ -84,6 +90,7 @@ export default function Sidebar({
           {!isCollapsed && <h2 className=" ">Theme</h2>}
         </div>
 
+        {/* logout */}
         <Button
           variant="destructive"
           size="sm"
