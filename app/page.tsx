@@ -52,7 +52,7 @@ export default async function Home() {
   const totalExpenses = getTotalExpenses(data);
 
   return (
-    <div className="custom-container pt-4">
+    <div className="pt-4">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex flex-col">
@@ -72,6 +72,12 @@ export default async function Home() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
         <StatCard
+          title="Total Expenses"
+          value={`$${totalExpenses}`}
+          icon={<DollarSign className="text-accent" />}
+          footer="All-time spending"
+        />
+        <StatCard
           title="Last Month"
           value={`$${totalLastMonth}`}
           icon={<Calendar className="text-accent" />}
@@ -83,16 +89,10 @@ export default async function Home() {
           icon={<Calendar className="text-accent" />}
           footer="All recorded expenses"
         />
-        <StatCard
-          title="Total Expenses"
-          value={`$${totalExpenses}`}
-          icon={<DollarSign className="text-accent" />}
-          footer="All-time spending"
-        />
       </div>
 
       {/* recent expenses  */}
-      <section>
+      <section className="">
         <RecentExpenses expenses={data} />
       </section>
     </div>

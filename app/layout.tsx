@@ -21,7 +21,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className="" suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute={"class"}

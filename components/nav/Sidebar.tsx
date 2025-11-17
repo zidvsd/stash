@@ -39,9 +39,9 @@ export default function Sidebar({
   };
   return (
     <aside
-      className={`dark:bg-sidebar-primary h-screen flex flex-col py-4 px-2 ${
+      className={`dark:bg-sidebar-primary flex flex-col py-4 px-2 ${
         isCollapsed ? "w-12" : "w-60"
-      } transition-width duration-300`}
+      } transition-width duration-300 sticky top-0 h-screen`}
     >
       {/* Header */}
       <div className="flex items-center justify-between">

@@ -16,8 +16,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
   // Determine background based on theme
   const bgColor =
     theme === "dark"
-      ? "var(--background)" // your dark mode background
-      : "var(--popover)"; // your light mode background
+      ? "bg-background" // your dark mode background
+      : "bg-background"; // your light mode background
 
   return (
     <Sonner

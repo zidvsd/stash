@@ -9,19 +9,22 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
+import { deleteExpense } from "@/lib/supabase/expenses";
+import { toast } from "sonner";
 type RecentExpensesProps = {
   expenses: Expense[];
 };
 
+const handleDeleteExpense = async (id: string) => {
+  try {
+    await deleteExpense(id);
+    toast.success("Item successfully deleted.");
+  } catch (err: any) {
+    toast.error("Delete failed.");
+  }
+};
 export default function RecentExpenses({ expenses }: RecentExpensesProps) {
   if (!expenses || expenses.length === 0) {
     return (
@@ -47,55 +50,103 @@ export default function RecentExpenses({ expenses }: RecentExpensesProps) {
           <CardTitle className="text-2xl">Recent Expenses</CardTitle>
         </CardHeader>
         <CardContent>
-          <table className="w-full text-left table-auto border-collapse mt-4">
-            <thead>
-              <tr className="text-gray-400">
-                <th className="px-4 py-2">Date</th>
-                <th className="px-4 py-2">Category</th>
-                <th className="px-4 py-2">Note</th>
-                <th className="px-4 py-2">Amount</th>
-                <th className="px-4 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {expenses.map((expense) => (
-                <tr
-                  key={expense.id}
-                  className="  hover:bg-neutral-300 dark:hover:bg-gray-700 hover-utility "
-                >
-                  <td className="px-4 py-2">
-                    {new Date(expense.created_at).toLocaleString("en-US", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td className="px-4 py-2">{expense.category}</td>
-                  <td className="px-4 py-2">{expense.note || "-"}</td>
-                  <td className="px-4 py-2 font-bold">
-                    ${expense.amount.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-2 flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="p-1 cursor-pointer hover:text-white"
-                    >
-                      <Pencil className="w-4 h-4 " />
-                    </Button>
+          {/* Desktop Table */}
+          <div className="hidden lg:block overflow-x-auto w-full">
+            <table className="w-full text-left table-auto border-collapse mt-4">
+              <thead>
+                <tr className="text-gray-400">
+                  <th className="px-4 py-2">Date</th>
+                  <th className="px-4 py-2">Category</th>
+                  <th className="px-4 py-2">Note</th>
+                  <th className="px-4 py-2">Amount</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {expenses.map((expense) => (
+                  <tr
+                    key={expense.id}
+                    className="hover:bg-neutral-300 dark:hover:bg-gray-700 hover-utility"
+                  >
+                    <td className="px-4 py-2">
+                      {new Date(expense.created_at).toLocaleDateString(
+                        "en-US",
+                        {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )}
+                    </td>
+                    <td className="px-4 py-2">{expense.category}</td>
+                    <td className="px-4 py-2">{expense.note || "-"}</td>
+                    <td className="px-4 py-2 font-bold">
+                      ${expense.amount.toFixed(2)}
+                    </td>
+                    <td className="px-4 py-2 flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-1 hover:text-white"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteExpense(expense.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="p-1 hover:text-white"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
+          {/* Mobile Cards */}
+          <div className="flex flex-col gap-4 lg:hidden mt-2">
+            {expenses.map((expense) => (
+              <div
+                key={expense.id}
+                className="border rounded-lg p-4 shadow-sm dark:border-gray-700 dark:shadow-none"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold">
+                    ${expense.amount.toFixed(2)}
+                  </span>
+                  <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="p-1 cursor-pointer hover:text-white"
+                      className="p-1 hover:text-white"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => handleDeleteExpense(expense.id)}
+                      variant="ghost"
+                      size="sm"
+                      className="p-1 hover:text-white"
                     >
                       <Trash2 className="w-4 h-4 text-red-500" />
                     </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                  {new Date(expense.created_at).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </div>
+                <div className="text-sm mb-1">Category: {expense.category}</div>
+                <div className="text-sm">Note: {expense.note || "-"}</div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

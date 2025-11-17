@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -24,6 +24,17 @@ export default function page() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // redirect
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) router.replace("/");
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -32,11 +43,20 @@ export default function page() {
       email,
       password,
     });
-
     setLoading(false);
 
-    if (error) {
+    if (error || !data.session) {
       toast.error("Login failed. Check your credentials.");
+      return;
+    }
+    //  upsert profile
+    const user = data.user;
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .upsert({ id: user.id, email: user.email });
+
+    if (profileError) {
+      toast.error("Failed to create profile:" + profileError.message);
     } else {
       toast.success("Logged in successfully!");
       router.push("/");
@@ -47,6 +67,7 @@ export default function page() {
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 50 }}
       transition={{ duration: 0.6 }}
       className="flex min-h-screen items-center w-full justify-center custom-container"
     >

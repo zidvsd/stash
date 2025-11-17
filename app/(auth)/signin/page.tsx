@@ -26,20 +26,30 @@ export default function page() {
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSigningIn(true);
-    const { error } = await supabase.auth.signUp({ email, password });
-    setSigningIn(false);
-    if (!error) {
-      toast.success("Account created successfully!");
-      router.push("/login");
-    } else {
+
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
+      {
+        email,
+        password,
+      }
+    );
+
+    if (signUpError || !signUpData.user) {
       toast.error("Signup failed. Please try again.");
+      setSigningIn(false);
+      return;
     }
+
+    toast.success("Account created! Please log in.");
+    setSigningIn(false);
+    router.push("/login");
   };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 50 }}
       transition={{ duration: 0.6 }}
       className="flex min-h-screen items-center w-full justify-center custom-container  "
     >

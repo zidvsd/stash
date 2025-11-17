@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="custom-container border-b border-b-neutral-300 dark:border-b-gray-700 py-4 flex items-center justify-between">
+      <div className="custom-container border-b sticky z-50 top-0 bg-background border-b-neutral-300 dark:border-b-gray-700 py-4 flex items-center justify-between">
         {/* Mobile toggle */}
         <button
           className="p-2 md:hidden rounded-md hover:bg-gray-200 dark:hover:bg-neutral-700 cursor-pointer hover-utility"
@@ -33,7 +33,7 @@ export default function Navbar() {
             exit={{ x: -50, opacity: 0 }}
             className="fixed inset-0 z-50 flex md:hidden"
           >
-            <div className=" bg-card border-r border-r-neutral-300 dark:border-r-gray-700">
+            <div className=" bg-card border-r sticky  border-r-neutral-300 dark:border-r-gray-700">
               <Sidebar onMobileLinkClick={() => setIsSidebarOpen(false)} />
             </div>
             <div
