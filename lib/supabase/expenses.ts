@@ -1,13 +1,15 @@
 import { supabase } from "./client";
-
+import { SupabaseClient } from "@supabase/supabase-js";
 // fetch expenses for a user
-export async function getExpenses(userId: string) {
+export async function getExpenses(supabase: SupabaseClient, userId: string) {
   const { data, error } = await supabase
     .from("expenses")
     .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
   if (error) throw error;
+  console.log(data);
+
   return data;
 }
 
