@@ -11,21 +11,50 @@ import {
 } from "@/components/ui/empty";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { deleteExpense } from "@/lib/supabase/expenses";
 import { toast } from "sonner";
+import { useExpensesStore } from "@/store/expenseStore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { deleteExpense } from "@/lib/supabase/expenses";
+
 type RecentExpensesProps = {
-  expenses: Expense[];
+  loading?: boolean;
 };
 
-const handleDeleteExpense = async (id: string) => {
-  try {
-    await deleteExpense(id);
-    toast.success("Item successfully deleted.");
-  } catch (err: any) {
-    toast.error("Delete failed.");
+export default function RecentExpenses({ loading }: RecentExpensesProps) {
+  const { expenses, removeExpense } = useExpensesStore();
+
+  const handleDeleteExpense = async (id: string) => {
+    try {
+      await deleteExpense(id);
+      removeExpense(id);
+      toast.success("Item successfully deleted.");
+    } catch (err: any) {
+      toast.error("Delete failed.");
+    }
+  };
+
+  if (loading) {
+    // Show skeletons for loading
+    return (
+      <div className="mt-4 space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <Skeleton key={i} className="h-12 w-full rounded-md" />
+        ))}
+      </div>
+    );
   }
-};
-export default function RecentExpenses({ expenses }: RecentExpensesProps) {
+
   if (!expenses || expenses.length === 0) {
     return (
       <Empty>
@@ -91,14 +120,34 @@ export default function RecentExpenses({ expenses }: RecentExpensesProps) {
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
-                      <Button
-                        onClick={() => handleDeleteExpense(expense.id)}
-                        variant="ghost"
-                        size="sm"
-                        className="p-1 hover:text-white"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="p-1 hover:text-white"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. Do you want to
+                              delete this expense?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteExpense(expense.id)}
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </td>
                   </tr>
                 ))}

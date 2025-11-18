@@ -16,13 +16,15 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-
+import { useExpensesStore } from "@/store/expenseStore";
 export default function AddExpenseForm() {
+  const { addExpense } = useExpensesStore();
   const [amount, setAmount] = useState<number | "">(0);
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -40,20 +42,24 @@ export default function AddExpenseForm() {
     }
 
     // Insert the expense
-    const { error } = await supabase.from("expenses").insert([
-      {
-        user_id: user.id,
-        amount: Number(amount),
-        category,
-        note,
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("expenses")
+      .insert([
+        {
+          user_id: user.id,
+          amount: Number(amount),
+          category,
+          note,
+        },
+      ])
+      .select();
 
     setLoading(false);
 
     if (error) {
       toast.error("Failed to add expense.");
-    } else {
+    } else if (data && data[0]) {
+      addExpense(data[0]);
       toast.success("Expense added successfully!");
       // Clear form
       setAmount(0);
@@ -76,6 +82,7 @@ export default function AddExpenseForm() {
         <div>
           <Label htmlFor="amount">Amount($)</Label>
           <Input
+            autoComplete="off"
             id="amount"
             type="number"
             min={0}
