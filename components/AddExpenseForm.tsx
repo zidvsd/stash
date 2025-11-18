@@ -65,6 +65,8 @@ export default function AddExpenseForm() {
       setAmount(0);
       setCategory("");
       setNote("");
+      // reroute to main page
+      router.push("/");
     }
   };
 
