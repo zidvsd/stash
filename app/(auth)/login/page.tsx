@@ -17,13 +17,13 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import { motion } from "motion/react";
-
+import { Eye, EyeOff } from "lucide-react";
 export default function page() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   // redirect
   useEffect(() => {
     const {
@@ -99,20 +99,25 @@ export default function page() {
               />
             </div>
 
-            <div>
+            <div className="relative">
               <Label htmlFor="password">Password</Label>
               <Input
-                className="mt-2"
+                className="mt-2 pr-10" // space for the icon
                 id="password"
-                name="password"
-                type="password"
-                placeholder="********"
+                type={showPassword ? "text" : "password"} // toggle
+                placeholder="Your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="cursor-pointer hover-utility absolute right-2 top-7 text-gray-400 hover:text-gray-500"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
-
             <Button
               variant={"accent"}
               type="submit"
