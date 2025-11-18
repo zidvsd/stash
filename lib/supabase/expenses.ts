@@ -1,6 +1,7 @@
 import { error } from "console";
 import { supabase } from "./client";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { Expense } from "../types/expense";
 // fetch expenses for a user
 export async function getExpenses(supabase: SupabaseClient, userId: string) {
   const { data, error } = await supabase
@@ -39,8 +40,23 @@ export async function addExpense({
 
   return data;
 }
-// delete an expense
 
+// update expense
+export async function updateExpense(expense: Expense) {
+  const { id, user_id, ...updates } = expense;
+
+  const { data, error } = await supabase
+    .from("expenses")
+    .update(updates)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+// delete an expense
 export async function deleteExpense(id: string) {
   const { data, error } = await supabase.from("expenses").delete().eq("id", id);
 

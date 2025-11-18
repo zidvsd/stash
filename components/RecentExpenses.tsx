@@ -13,6 +13,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useExpensesStore } from "@/store/expenseStore";
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,7 +34,7 @@ type RecentExpensesProps = {
 
 export default function RecentExpenses({ loading }: RecentExpensesProps) {
   const { expenses, removeExpense } = useExpensesStore();
-
+  const router = useRouter();
   const handleDeleteExpense = async (id: string) => {
     try {
       await deleteExpense(id);
@@ -43,7 +44,10 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
       toast.error("Delete failed.");
     }
   };
-
+  const handleEditExpense = (id: string) => {
+    if (!id) return toast.error("Unable to edit item.");
+    router.push(`/add-expense/${id}`);
+  };
   if (loading) {
     // Show skeletons for loading
     return (
@@ -114,6 +118,9 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
                     </td>
                     <td className="px-4 py-2 flex items-center gap-2">
                       <Button
+                        onClick={() => {
+                          handleEditExpense(expense.id);
+                        }}
                         variant="ghost"
                         size="sm"
                         className="p-1 hover:text-white"
@@ -168,6 +175,9 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
                   </span>
                   <div className="flex gap-2">
                     <Button
+                      onClick={() => {
+                        handleEditExpense(expense.id);
+                      }}
                       variant="ghost"
                       size="sm"
                       className="p-1 hover:text-white"

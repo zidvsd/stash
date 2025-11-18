@@ -6,6 +6,7 @@ interface ExpensesState {
   setExpenses: (data: Expense[]) => void;
   addExpense: (expense: Expense) => void;
   removeExpense: (id: string) => void;
+  updateExpense: (expense: Expense) => void;
 }
 
 export const useExpensesStore = create<ExpensesState>((set) => ({
@@ -15,4 +16,8 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
     set((state) => ({ expenses: [expense, ...state.expenses] })),
   removeExpense: (id) =>
     set((state) => ({ expenses: state.expenses.filter((e) => e.id !== id) })),
+  updateExpense: (updated: Expense) =>
+    set((state) => ({
+      expenses: state.expenses.map((e) => (e.id === updated.id ? updated : e)),
+    })),
 }));
