@@ -5,6 +5,7 @@ import RecentExpenses from "@/components/RecentExpenses";
 import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { getExpenses } from "@/lib/supabase/expenses";
+import { useAuthExpenses } from "@/hooks/useAuthExpenses";
 import {
   Card,
   CardHeader,
@@ -48,25 +49,7 @@ function StatCard({ title, value, icon, footer, loading }: StatCardProps) {
 }
 
 export default function Home() {
-  const { expenses, setExpenses } = useExpensesStore();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchData() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) redirect("/login");
-
-      const expensesData = await getExpenses(supabase, session.user.id);
-      setExpenses(expensesData);
-    }
-    if (expenses.length === 0) {
-      fetchData();
-    } else {
-      setLoading(false);
-    }
-  }, [expenses.length, setExpenses]);
+  const { expenses, loading } = useAuthExpenses();
 
   const totalExpenses = getTotalExpenses(expenses);
   const lastMonthExpenses = filterLastMonthExpenses(expenses);
