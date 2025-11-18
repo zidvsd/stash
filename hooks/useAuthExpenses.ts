@@ -16,16 +16,11 @@ export function useAuthExpenses() {
       if (!session) redirect("/login");
 
       const expensesData = await getExpenses(supabase, session.user.id);
-      setExpenses(expensesData);
+      setExpenses(expensesData || []);
       setLoading(false);
     }
-
-    if (expenses.length === 0) {
-      fetchExpenses();
-    } else {
-      setLoading(false);
-    }
-  }, [expenses.length, setExpenses]);
+    fetchExpenses();
+  }, [setExpenses]);
 
   return { expenses, loading };
 }

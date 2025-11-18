@@ -73,7 +73,7 @@ export default function UpdateExpenseForm() {
     return <div className="custom-container">Expense not found</div>;
 
   return (
-    <div className="custom-container mx-auto mt-6 dark:bg-sidebar-primary rounded-lg shadow-md p-6 border-neutral-300 border dark:border-transparent space-y-6">
+    <div className="max-w-2xl mx-auto mt-6 dark:bg-sidebar-primary rounded-lg shadow-md p-6 border-neutral-300 border dark:border-transparent space-y-6">
       <div className="flex flex-col gap-2">
         <h2 className="text-xl font-bold ">Update Expense</h2>
         <span className="text-sm text-neutral-400">
