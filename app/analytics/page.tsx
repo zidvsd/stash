@@ -19,7 +19,6 @@ import {
   getCategoryFrequency,
   getTotalPerCategory,
 } from "@/lib/expenses";
-import { data } from "motion/react-client";
 export default function page() {
   const { expenses, loading } = useAuthExpenses();
 
@@ -81,11 +80,8 @@ export default function page() {
       </div>
 
       <section className="grid w-full grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-        <ChartPieLabelCustom
-          key={JSON.stringify(categoryTotals)}
-          data={categoryTotals}
-        />
-        <ChartLineLinear />
+        <ChartPieLabelCustom data={categoryTotals} />
+        {/* <ChartLineLinear /> */}
       </section>
     </div>
   );
