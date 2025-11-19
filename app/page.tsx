@@ -14,12 +14,12 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { Calendar, DollarSign } from "lucide-react";
+import { Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { filterLastMonthExpenses, getTotalExpenses } from "@/lib/expenses";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type StatCardProps = {
+export type StatCardProps = {
   title: string;
   value?: string | number;
   icon: React.ReactNode;
@@ -27,7 +27,13 @@ type StatCardProps = {
   loading?: boolean;
 };
 
-function StatCard({ title, value, icon, footer, loading }: StatCardProps) {
+export function StatCard({
+  title,
+  value,
+  icon,
+  footer,
+  loading,
+}: StatCardProps) {
   return (
     <Card className="w-full space-y-2">
       <CardHeader>
@@ -91,7 +97,7 @@ export default function Home() {
         <StatCard
           title="Last Month"
           value={`$${totalLastMonth}`}
-          icon={<Calendar className="text-accent" />}
+          icon={<TrendingUp className="text-accent" />}
           footer="Previous month spending"
           loading={loading}
         />
