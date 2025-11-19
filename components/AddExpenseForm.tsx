@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { useExpensesStore } from "@/store/expenseStore";
 export default function AddExpenseForm() {
   const { addExpense } = useExpensesStore();
-  const [amount, setAmount] = useState<number | "">(0);
+  const [amount, setAmount] = useState<number | "">("");
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ export default function AddExpenseForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-
+    const selectedCategory = category || "Other";
     // Get the current user
     const {
       data: { user },
@@ -48,7 +48,7 @@ export default function AddExpenseForm() {
         {
           user_id: user.id,
           amount: Number(amount),
-          category,
+          category: selectedCategory,
           note,
         },
       ])
@@ -88,11 +88,12 @@ export default function AddExpenseForm() {
             id="amount"
             type="number"
             min={0}
+            step={"0.01"}
             value={amount}
             onChange={(e) =>
-              setAmount(e.target.value === "" ? "" : Number(e.target.value))
+              setAmount(e.target.value === "" ? "" : parseFloat(e.target.value))
             }
-            placeholder="Enter amount"
+            placeholder="0.00"
             required
             className="mt-2"
           />

@@ -59,3 +59,12 @@ export function getCategoryFrequency(expenses: Expense[]) {
 
   return mostFrequentCategory;
 }
+
+// get total spendings per category
+export function getTotalPerCategory(expenses: Expense[]) {
+  return expenses.reduce((acc: Record<string, number>, expense) => {
+    const category = expense.category;
+    acc[category] = (acc[category] || 0) + expense.amount;
+    return acc;
+  }, {});
+}

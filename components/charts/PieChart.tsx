@@ -1,7 +1,7 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
-import { Pie, PieChart } from "recharts";
+import { Pie, PieChart, Cell, ResponsiveContainer } from "recharts";
 
 import {
   Card,
@@ -17,90 +17,96 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { categories } from "@/lib/categories";
 
-export const description = "A pie chart with a custom label";
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
+type ChartPieLabelCustomProps = {
+  data: {
+    category: string;
+    amount: number;
+    fill?: string;
+  }[];
+};
+const defaultColors = [
+  "#EF4444", // red
+  "#3B82F6", // blue
+  "#10B981", // green
+  "#8B5CF6", // violet/purple
+  "#F43F5E", // pink/red
+  "#EAB308", // yellow (less amber)
+  "#6366F1", // indigo
+  "#D946EF", // fuchsia
+  "#F97316", // orange
 ];
+export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
+  const chartConfig: ChartConfig = {
+    visitors: { label: "Visitors" },
+  };
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
-  },
-} satisfies ChartConfig;
-
-export function ChartPieLabelCustom() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Custom Label</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Spending by Category</CardTitle>
+        <CardDescription>
+          Distribution of expenses across categories
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px] px-0"
+          className="mx-auto aspect-square max-h- px-0"
         >
           <PieChart>
             <ChartTooltip
-              content={<ChartTooltipContent nameKey="visitors" hideLabel />}
+              content={<ChartTooltipContent nameKey="amount" hideLabel />}
             />
             <Pie
-              data={chartData}
-              dataKey="visitors"
+              data={data}
+              dataKey="amount"
+              nameKey="category"
               labelLine={false}
-              label={({ payload, ...props }) => {
-                return (
-                  <text
-                    cx={props.cx}
-                    cy={props.cy}
-                    x={props.x}
-                    y={props.y}
-                    textAnchor={props.textAnchor}
-                    dominantBaseline={props.dominantBaseline}
-                    fill="hsla(var(--foreground))"
-                  >
-                    {payload.visitors}
-                  </text>
-                );
-              }}
-              nameKey="browser"
-            />
+              isAnimationActive={true} // make sure animation is enabled
+              animationDuration={800} // optional, controls speed
+              animationEasing="ease-out"
+              label={({ payload, ...props }) => (
+                <text
+                  x={props.x}
+                  y={props.y}
+                  textAnchor={props.textAnchor}
+                  dominantBaseline={props.dominantBaseline}
+                  fill={
+                    payload.fill ||
+                    defaultColors[props.index % defaultColors.length]
+                  }
+                >
+                  ${payload.amount}
+                </text>
+              )}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    entry.fill || defaultColors[index % defaultColors.length]
+                  }
+                />
+              ))}
+            </Pie>
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground leading-none">
-          Showing total visitors for the last 6 months
-        </div>
+      <CardFooter className="flex flex-wrap  items-center justify-center w-full gap-4 text-sm">
+        {data.map((entry, idx) => (
+          <div key={idx} className="flex items-center gap-2">
+            <div
+              className="w-4 h-4 rounded"
+              style={{
+                backgroundColor:
+                  entry.fill || defaultColors[idx % defaultColors.length],
+              }}
+            ></div>
+            <span>{entry.category}</span>
+          </div>
+        ))}
       </CardFooter>
     </Card>
   );
