@@ -37,6 +37,7 @@ const defaultColors = [
 ];
 
 export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
+  // ChartConfig only needs label for tooltip / container
   const chartConfig: ChartConfig = {
     pie: { label: "Spending" },
   };
@@ -51,21 +52,19 @@ export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
       </CardHeader>
 
       <CardContent className="flex-1 pb-0">
-        {/* Use ChartContainer to provide context for ChartTooltip */}
         <ChartContainer config={chartConfig} className="w-full h-[500px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              {/* Tooltip will now work */}
               <ChartTooltip
                 content={
                   <ChartTooltipContent nameKey="amount" hideLabel={false} />
                 }
               />
               <Pie
-                key={data.map((d) => d.amount).join("-")} // force remount
+                key={data.map((d) => d.amount).join("-")}
                 data={data}
-                dataKey="amount"
-                nameKey="category"
+                dataKey="amount" // directly here, NOT in chartConfig
+                nameKey="category" // directly here, NOT in chartConfig
                 labelLine={false}
                 isAnimationActive={true}
                 animationDuration={800}
