@@ -13,6 +13,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartConfig,
 } from "@/components/ui/chart";
 
 type ChartPieLabelCustomProps = {
@@ -36,11 +37,8 @@ const defaultColors = [
 ];
 
 export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
-  // Updated chartConfig to be generic for Pie chart
-  const chartConfig = {
-    dataKey: "amount",
-    nameKey: "category",
-    tooltipLabel: "Spending", // more descriptive for tooltips
+  const chartConfig: ChartConfig = {
+    pie: { label: "Spending" },
   };
 
   return (
@@ -51,18 +49,23 @@ export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
           Distribution of expenses across categories
         </CardDescription>
       </CardHeader>
+
       <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig} className="w-full h-[400px]">
+        {/* Use ChartContainer to provide context for ChartTooltip */}
+        <ChartContainer config={chartConfig} className="w-full h-[500px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
+              {/* Tooltip will now work */}
               <ChartTooltip
-                content={<ChartTooltipContent nameKey="amount" hideLabel />}
+                content={
+                  <ChartTooltipContent nameKey="amount" hideLabel={false} />
+                }
               />
               <Pie
                 key={data.map((d) => d.amount).join("-")} // force remount
                 data={data}
-                dataKey={chartConfig.dataKey}
-                nameKey={chartConfig.nameKey}
+                dataKey="amount"
+                nameKey="category"
                 labelLine={false}
                 isAnimationActive={true}
                 animationDuration={800}
@@ -95,6 +98,7 @@ export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
+
       <CardFooter className="flex flex-wrap items-center justify-center w-full gap-4 text-sm">
         {data.map((entry, idx) => (
           <div key={idx} className="flex items-center gap-2">
