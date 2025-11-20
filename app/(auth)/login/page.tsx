@@ -53,7 +53,7 @@ export default function page() {
     const user = data.user;
     const { error: profileError } = await supabase
       .from("profiles")
-      .upsert({ id: user.id, email: user.email });
+      .upsert({ id: user.id, email: user.email, user_id: user.id });
 
     if (profileError) {
       toast.error("Failed to create profile:" + profileError.message);

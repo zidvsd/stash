@@ -1,4 +1,3 @@
-import { error } from "console";
 import { supabase } from "./client";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Expense } from "../types/expense";
@@ -11,7 +10,6 @@ export async function getExpenses(supabase: SupabaseClient, userId: string) {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  console.log(data);
 
   return data;
 }

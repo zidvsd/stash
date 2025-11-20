@@ -45,7 +45,7 @@ export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Spending by Category</CardTitle>
+        <CardTitle className="text-2xl">Spending by Category</CardTitle>
         <CardDescription>
           Distribution of expenses across categories
         </CardDescription>

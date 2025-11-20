@@ -16,7 +16,6 @@ import {
 import Link from "next/link";
 import { Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { filterLastMonthExpenses, getTotalExpenses } from "@/lib/expenses";
-import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export type StatCardProps = {
@@ -34,6 +33,10 @@ export function StatCard({
   footer,
   loading,
 }: StatCardProps) {
+  if (loading) {
+    return <Skeleton className="w-full h-36 rounded-md" />;
+  }
+
   return (
     <Card className="w-full space-y-2">
       <CardHeader>
@@ -42,13 +45,9 @@ export function StatCard({
           {icon}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-3xl font-bold">
-        {loading ? <Skeleton className="h-8 w-24" /> : value}
-      </CardContent>
+      <CardContent className="text-3xl font-bold">{value}</CardContent>
       {footer && (
-        <CardFooter className="text-neutral-500 mt-2">
-          {loading ? <Skeleton className="h-4 w-32" /> : footer}
-        </CardFooter>
+        <CardFooter className="text-neutral-500 mt-2">{footer}</CardFooter>
       )}
     </Card>
   );
@@ -60,6 +59,9 @@ export default function Home() {
   const totalExpenses = getTotalExpenses(expenses);
   const lastMonthExpenses = filterLastMonthExpenses(expenses);
   const totalLastMonth = getTotalExpenses(lastMonthExpenses);
+
+  // Array for rendering skeleton StatCards
+  const skeletonCards = Array(3).fill(0);
 
   return (
     <div className="pt-4">
@@ -87,33 +89,37 @@ export default function Home() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
-        <StatCard
-          title="Total Expenses"
-          value={`$${totalExpenses}`}
-          icon={<DollarSign className="text-accent" />}
-          footer="All-time spending"
-          loading={loading}
-        />
-        <StatCard
-          title="Last Month"
-          value={`$${totalLastMonth}`}
-          icon={<TrendingUp className="text-accent" />}
-          footer="Previous month spending"
-          loading={loading}
-        />
-        <StatCard
-          title="Total Transactions"
-          value={expenses.length}
-          icon={<Calendar className="text-accent" />}
-          footer="All recorded expenses"
-          loading={loading}
-        />
+        {loading ? (
+          skeletonCards.map((_, i) => (
+            <Skeleton key={i} className="w-full h-36 rounded-md" />
+          ))
+        ) : (
+          <>
+            <StatCard
+              title="Total Expenses"
+              value={`$${totalExpenses}`}
+              icon={<DollarSign className="text-accent" />}
+              footer="All-time spending"
+            />
+            <StatCard
+              title="Last Month"
+              value={`$${totalLastMonth}`}
+              icon={<TrendingUp className="text-accent" />}
+              footer="Previous month spending"
+            />
+            <StatCard
+              title="Total Transactions"
+              value={expenses.length}
+              icon={<Calendar className="text-accent" />}
+              footer="All recorded expenses"
+            />
+          </>
+        )}
       </div>
 
       {/* Recent Expenses */}
       <section className="mt-4">
         {loading ? (
-          // Skeleton for recent expenses
           <div className="space-y-4">
             <Skeleton className="h-12 w-full rounded-md" />
             <Skeleton className="h-12 w-full rounded-md" />
