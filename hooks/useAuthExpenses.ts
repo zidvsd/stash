@@ -76,14 +76,8 @@ export function useAuthProfile() {
       }
       setLoading(false);
     };
-
-    // Only fetch if profile is not already in store
-    if (!profile) {
-      fetchProfile();
-    } else {
-      setLoading(false);
-    }
-  }, [authLoading, user, profile, setProfile]);
+    fetchProfile();
+  }, [authLoading, user?.id, setProfile]);
 
   return { profile, loading: loading || authLoading };
 }
