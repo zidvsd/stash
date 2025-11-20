@@ -1,6 +1,5 @@
 "use client";
 
-import { Expense } from "@/lib/types/expense";
 import { FolderMinus, Trash2, Pencil } from "lucide-react"; // Trash2 for delete action
 import {
   Empty,
@@ -85,23 +84,40 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
         <CardContent>
           {/* Desktop Table */}
           <div className="hidden lg:block overflow-x-auto w-full">
-            <table className="w-full text-left table-auto border-collapse mt-4">
+            <table className="w-full text-left table-auto border-collapse mt-4 ">
               <thead>
-                <tr className="text-gray-400">
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">Category</th>
-                  <th className="px-4 py-2">Note</th>
-                  <th className="px-4 py-2">Amount</th>
-                  <th className="px-4 py-2">Actions</th>
+                <tr className="text-gray-800 dark:text-gray-200 ">
+                  <th className="px-4 py-3 border-b border-neutral-300 dark:border-gray-700">
+                    Date
+                  </th>
+                  <th className="px-4 py-3 border-b border-neutral-300 dark:border-gray-700">
+                    Category
+                  </th>
+                  <th className="px-4 py-3 border-b border-neutral-300 dark:border-gray-700">
+                    Note
+                  </th>
+                  <th className="px-4 py-3 border-b border-neutral-300 dark:border-gray-700">
+                    Amount
+                  </th>
+                  <th className="px-4 py-3 border-b border-neutral-300 dark:border-gray-700">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((expense) => (
+                {expenses.map((expense, index) => (
                   <tr
                     key={expense.id}
-                    className="hover:bg-neutral-300 dark:hover:bg-gray-700 hover-utility"
+                    className={`
+          group transition-colors hover:bg-gray-100 dark:hover:bg-gray-800
+          ${
+            index !== 0
+              ? "border-t border-neutral-300 dark:border-gray-700"
+              : ""
+          }
+        `}
                   >
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-3">
                       {new Date(expense.created_at).toLocaleDateString(
                         "en-US",
                         {
@@ -111,32 +127,40 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
                         }
                       )}
                     </td>
-                    <td className="px-4 py-2">{expense.category}</td>
-                    <td className="px-4 py-2">{expense.note || "-"}</td>
-                    <td className="px-4 py-2 font-bold">
+
+                    <td className="px-4 py-3">
+                      <span className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 rounded-full">
+                        {expense.category}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-3">{expense.note || "-"}</td>
+
+                    <td className="px-4 py-3 font-bold">
                       ${expense.amount.toFixed(2)}
                     </td>
-                    <td className="px-4 py-2 flex items-center gap-2">
+
+                    <td className="px-4 py-3 flex items-center gap-2">
                       <Button
-                        onClick={() => {
-                          handleEditExpense(expense.id);
-                        }}
+                        onClick={() => handleEditExpense(expense.id)}
                         variant="ghost"
                         size="sm"
-                        className="p-1 hover:text-white"
+                        className="p-1 hover:bg-blue-500/20 hover:text-blue-500"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
+
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1 hover:text-white"
+                            className="p-1 hover:bg-red-500/20 transition"
                           >
                             <Trash2 className="w-4 h-4 text-red-500" />
                           </Button>
                         </AlertDialogTrigger>
+
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -167,42 +191,54 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
             {expenses.map((expense) => (
               <div
                 key={expense.id}
-                className="border rounded-lg p-4 shadow-sm dark:border-gray-700 dark:shadow-none"
+                className="rounded-xl border border-neutral-300 dark:border-neutral-700 p-4 shadow-sm dark:shadow-none bg-white dark:bg-transparent dark:border-none transition hover:shadow-md"
               >
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold">
+                {/* Top Row */}
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-lg font-bold">
                     ${expense.amount.toFixed(2)}
                   </span>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5">
                     <Button
-                      onClick={() => {
-                        handleEditExpense(expense.id);
-                      }}
+                      onClick={() => handleEditExpense(expense.id)}
                       variant="ghost"
                       size="sm"
-                      className="p-1 hover:text-white"
+                      className="p-1 hover:bg-blue-500/20 hover:text-blue-500"
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
+
                     <Button
                       onClick={() => handleDeleteExpense(expense.id)}
                       variant="ghost"
                       size="sm"
-                      className="p-1 hover:text-white"
+                      className="p-1 hover:bg-red-500/20"
                     >
                       <Trash2 className="w-4 h-4 text-red-500" />
                     </Button>
                   </div>
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+
+                {/* Date */}
+                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                   {new Date(expense.created_at).toLocaleDateString("en-US", {
                     day: "numeric",
                     month: "short",
                     year: "numeric",
                   })}
                 </div>
-                <div className="text-sm mb-1">Category: {expense.category}</div>
-                <div className="text-sm">Note: {expense.note || "-"}</div>
+
+                {/* Category */}
+                <div className="mb-2">
+                  <span className="px-3 py-1 rounded-full text-xs bg-neutral-200 dark:bg-neutral-700">
+                    {expense.category}
+                  </span>
+                </div>
+
+                {/* Note */}
+                <div className="text-sm text-gray-700 dark:text-gray-300">
+                  {expense.note || null}
+                </div>
               </div>
             ))}
           </div>
