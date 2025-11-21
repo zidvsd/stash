@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { DarkModeToggle } from "../DarkModeToggle";
 import { useExpensesStore } from "@/store/expenseStore";
+import { useProfileStore } from "@/store/useProfileStore";
 export default function Sidebar({
   isCollapsed = false,
   toggleCollapse,
@@ -21,6 +22,7 @@ export default function Sidebar({
   onMobileLinkClick?: () => void; // mobile sidebar close
 }) {
   const { setExpenses } = useExpensesStore();
+  const { clearProfile } = useProfileStore();
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
@@ -34,7 +36,7 @@ export default function Sidebar({
       toast.success("Logged out successfully.");
       // clear expense store
       setExpenses([]);
-
+      clearProfile();
       router.push("/login");
     } catch (err: any) {
       toast.error("Logout failed: " + err.message);

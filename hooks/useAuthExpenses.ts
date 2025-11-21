@@ -59,25 +59,31 @@ export function useAuthProfile() {
   const { profile, setProfile } = useProfileStore(); // Zustand store
   const [loading, setLoading] = useState(true);
 
+  const fetchProfile = async () => {
+    if (!user) return;
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle(); // maybeSingle returns null if no row exists
+
+    if (error) {
+      console.error("Error fetching profile:", error.message);
+    } else {
+      setProfile(data ?? null); // update global store
+    }
+    setLoading(false);
+  };
   useEffect(() => {
     if (authLoading || !user) return;
-
-    const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle(); // maybeSingle returns null if no row exists
-
-      if (error) {
-        console.error("Error fetching profile:", error.message);
-      } else {
-        setProfile(data ?? null); // update global store
-      }
-      setLoading(false);
-    };
     fetchProfile();
   }, [authLoading, user?.id, setProfile]);
 
-  return { profile, loading: loading || authLoading };
+  return {
+    profile,
+    loading: loading || authLoading,
+    refetchProfile: fetchProfile,
+  };
 }

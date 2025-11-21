@@ -20,7 +20,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 export default function Page() {
-  const { profile, loading } = useAuthProfile();
+  const { profile, loading, refetchProfile } = useAuthProfile();
 
   const [form, setForm] = useState<{
     name: string;
@@ -37,16 +37,15 @@ export default function Page() {
 
   // Sync form with profile
   useEffect(() => {
-    if (profile) {
-      setForm({
-        name: profile.name || "",
-        currency: profile.currency || "PHP",
-        monthly_budget: profile.monthly_budget
-          ? String(profile.monthly_budget)
-          : "5000",
-      });
-    }
-  }, [profile]);
+    if (!profile) return;
+    setForm({
+      name: profile.name || "",
+      currency: profile.currency || "PHP",
+      monthly_budget: profile.monthly_budget
+        ? String(profile.monthly_budget)
+        : "5000",
+    });
+  }, [profile?.id]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -107,6 +106,7 @@ export default function Page() {
       });
 
       toast.success("Profile successfully updated!");
+      await refetchProfile();
     } catch (error) {
       console.error(error);
       toast.error("Profile update failed. Please try again.");
