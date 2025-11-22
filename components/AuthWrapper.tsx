@@ -20,7 +20,6 @@ export default function AuthWrapper({ children }: AuthWrapperProps) {
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
-        if (!session) router.refresh(); // refresh to trigger layout re-render if needed
       }
     );
 
