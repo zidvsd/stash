@@ -47,7 +47,7 @@ export function StatCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="text-3xl font-bold">
-        {getCurrencySymbol(currency)}
+        {getCurrencySymbol(currency || "PHP")}
         {value}
       </CardContent>
       {footer && (
