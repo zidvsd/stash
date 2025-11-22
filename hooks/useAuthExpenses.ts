@@ -5,10 +5,12 @@ import { getExpenses } from "@/lib/supabase/expenses";
 import { useRouter } from "next/navigation";
 import { Profile } from "@/lib/types/profile";
 import { useProfileStore } from "@/store/profileStore";
+import { useCallback } from "react";
 export function useAuth() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -17,7 +19,8 @@ export function useAuth() {
       } = await supabase.auth.getSession();
 
       if (!session?.user) {
-        router.push("/login");
+        setRedirecting(true);
+        router.replace("/login");
         return;
       }
 
@@ -28,15 +31,27 @@ export function useAuth() {
     checkUser();
   }, [router]);
 
-  return { user, loading };
+  return { user, loading, redirecting };
 }
 
-export function useAuthExpenses() {
+export function useRedirectIfAuth(redirectTo = "/") {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace(redirectTo); // redirect if already logged in
+    }
+  }, [user, loading, router, redirectTo]);
+}
+
+export function useAuthExpenses(user: any) {
   const { expenses, setExpenses } = useExpensesStore();
-  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (authLoading || !user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     const fetchExpenses = async () => {
       const expensesData = await getExpenses(supabase, user.id);
@@ -44,51 +59,48 @@ export function useAuthExpenses() {
       setLoading(false);
     };
 
-    if (expenses.length === 0) {
-      fetchExpenses();
-    } else {
+    if (expenses.length === 0) fetchExpenses();
+    else {
       setLoading(false);
     }
-  }, [authLoading, user, expenses.length, setExpenses]);
+  }, [user, expenses.length, setExpenses]);
 
-  return { expenses, loading: loading || authLoading };
+  return { expenses, loading };
 }
 
-export function useAuthProfile() {
-  const { user, loading: authLoading } = useAuth();
+export function useAuthProfile(user: any) {
   const { profile, setProfile } = useProfileStore(); // Zustand store
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async () => {
+  // Fetch function can be reused for refetch
+  const fetchProfile = useCallback(async () => {
     if (!user) return;
+
     setLoading(true);
 
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", user.id)
-      .maybeSingle(); // maybeSingle returns null if no row exists
+      .maybeSingle();
 
-    if (error) {
-      console.error("Error fetching profile:", error.message);
-    } else {
-      setProfile(data ?? null); // update global store
+    if (!error) {
+      setProfile(data ?? null);
 
-      // set currency to store
       if (data?.currency) {
         useExpensesStore.getState().setCurrency(data.currency);
       }
+    } else {
+      console.error("Error fetching profile:", error.message);
     }
-    setLoading(false);
-  };
-  useEffect(() => {
-    if (authLoading || !user) return;
-    fetchProfile();
-  }, [authLoading, user?.id, setProfile]);
 
-  return {
-    profile,
-    loading: loading || authLoading,
-    refetchProfile: fetchProfile,
-  };
+    setLoading(false);
+  }, [user, setProfile]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  // Return refetch function
+  return { profile, loading, refetchProfile: fetchProfile };
 }

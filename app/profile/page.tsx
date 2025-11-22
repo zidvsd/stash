@@ -18,9 +18,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { updateProfile } from "@/lib/supabase/profile";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-
+import { useAuth } from "@/hooks/useAuthExpenses";
 export default function Page() {
-  const { profile, loading, refetchProfile } = useAuthProfile();
+  const { user } = useAuth();
+  const { profile, loading, refetchProfile } = useAuthProfile(user);
 
   const [form, setForm] = useState<{
     name: string;

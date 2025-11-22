@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useExpensesStore } from "@/store/expenseStore";
-import { useAuthExpenses } from "@/hooks/useAuthExpenses";
+import { useAuthExpenses, useAuth } from "@/hooks/useAuthExpenses";
 import { updateExpense as updateSupabaseExpense } from "@/lib/supabase/expenses";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function UpdateExpenseForm() {
   const router = useRouter();
   const params = useParams();
-  const { expenses } = useAuthExpenses();
+  const { user } = useAuth();
+  const { expenses } = useAuthExpenses(user);
   const matchItem = expenses.find((item) => item.id === params.itemId);
 
   const { updateExpense: updateLocal } = useExpensesStore();

@@ -18,10 +18,12 @@ import {
   getCategoryFrequency,
   getTotalPerCategory,
 } from "@/lib/expenses";
-import { useAuthProfile } from "@/hooks/useAuthExpenses";
+import { useAuthProfile, useAuth } from "@/hooks/useAuthExpenses";
+
 export default function page() {
-  const { expenses, loading: expensesLoading } = useAuthExpenses();
-  const { profile, loading: profileLoading } = useAuthProfile();
+  const { user } = useAuth();
+  const { expenses, loading: expensesLoading } = useAuthExpenses(user);
+  const { profile, loading: profileLoading } = useAuthProfile(user);
   const loading = expensesLoading || profileLoading;
   const currency = profile?.currency || "PHP";
   // Show skeletons while loading
@@ -77,6 +79,7 @@ export default function page() {
         <StatCard
           title="Total Expenses"
           currency={currency}
+          isCurrency={true}
           value={totalExpenses}
           icon={<DollarSign className="text-accent" />}
         />
@@ -90,6 +93,7 @@ export default function page() {
         <StatCard
           title="Avg Daily Spend"
           currency={currency}
+          isCurrency={true}
           value={avgDailySpend}
           icon={<Calendar className="text-accent" />}
         />

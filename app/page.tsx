@@ -16,7 +16,7 @@ import { getCurrencySymbol } from "@/lib/utils";
 import { useExpensesStore } from "@/store/expenseStore";
 import { useAuthProfile } from "@/hooks/useAuthExpenses";
 import { useAuthExpenses } from "@/hooks/useAuthExpenses";
-
+import { useAuth } from "@/hooks/useAuthExpenses";
 export type StatCardProps = {
   title: string;
   value?: string | number;
@@ -24,6 +24,7 @@ export type StatCardProps = {
   footer?: string;
   loading?: boolean;
   currency?: string;
+  isCurrency?: boolean;
 };
 
 export function StatCard({
@@ -33,6 +34,7 @@ export function StatCard({
   footer,
   loading,
   currency,
+  isCurrency = false,
 }: StatCardProps) {
   if (loading) {
     return <Skeleton className="w-full h-36 rounded-md" />;
@@ -47,7 +49,7 @@ export function StatCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="text-3xl font-bold">
-        {getCurrencySymbol(currency || "PHP")}
+        {isCurrency && getCurrencySymbol(currency || "PHP")}
         {value}
       </CardContent>
       {footer && (
@@ -58,18 +60,39 @@ export function StatCard({
 }
 
 export default function Home() {
-  const { expenses, loading: expensesLoading } = useAuthExpenses();
-  const { profile, loading: profileLoading } = useAuthProfile();
+  // check for auth
+  const { user, loading: authLoading, redirecting } = useAuth();
+  const { expenses, loading: expensesLoading } = useAuthExpenses(user);
+  const { profile, loading: profileLoading } = useAuthProfile(user);
+  const currency = useExpensesStore((state) => state.currency) || "PHP";
 
+  const isLoading = authLoading || profileLoading || expensesLoading;
+  if (authLoading || redirecting) {
+    return (
+      <div className="pt-4">
+        <Skeleton className="h-12 w-48 mb-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <Skeleton className="w-full h-36 rounded-md" />
+          <Skeleton className="w-full h-36 rounded-md" />
+          <Skeleton className="w-full h-36 rounded-md" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null; // user not found, already redirecting handled in useAuth
+
+  // compute stats
   const totalExpenses = getTotalExpenses(expenses);
   const lastMonthExpenses = filterLastMonthExpenses(expenses);
   const totalLastMonth = getTotalExpenses(lastMonthExpenses);
-  const currency = useExpensesStore((state) => state.currency) || "PHP";
 
   const loading = profileLoading;
 
   // Array for rendering skeleton StatCards
   const skeletonCards = Array(3).fill(0);
+
+  // user is null → redirect handled inside useAuth
 
   return (
     <div className="pt-4">
@@ -107,6 +130,7 @@ export default function Home() {
               title="Total Expenses"
               currency={currency}
               value={totalExpenses}
+              isCurrency={true}
               icon={<DollarSign className="text-accent" />}
               footer="All-time spending"
             />
@@ -114,12 +138,14 @@ export default function Home() {
               title="Last Month"
               currency={currency}
               value={totalLastMonth}
+              isCurrency={true}
               icon={<TrendingUp className="text-accent" />}
               footer="Previous month spending"
             />
             <StatCard
               title="Total Transactions"
               value={expenses.length}
+              isCurrency={false}
               icon={<Calendar className="text-accent" />}
               footer="All recorded expenses"
             />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRedirectIfAuth } from "@/hooks/useAuthExpenses";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -19,6 +20,7 @@ import Logo from "@/components/Logo";
 import { motion } from "motion/react";
 import { Eye, EyeOff } from "lucide-react";
 export default function page() {
+  useRedirectIfAuth("/");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
