@@ -26,14 +26,18 @@ export async function addExpense({
   category: string;
   note?: string;
 }) {
-  const { data, error } = await supabase.from("expenses").insert([
-    {
-      user_id: userId,
-      amount,
-      category,
-      note,
-    },
-  ]);
+  const { data, error } = await supabase
+    .from("expenses")
+    .insert([
+      {
+        user_id: userId,
+        amount,
+        category,
+        note,
+        created_at: new Date().toISOString(),
+      },
+    ])
+    .select();
   if (error) throw error;
 
   return data;

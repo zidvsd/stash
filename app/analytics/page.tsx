@@ -18,10 +18,12 @@ import {
   getCategoryFrequency,
   getTotalPerCategory,
 } from "@/lib/expenses";
-
+import { useAuthProfile } from "@/hooks/useAuthExpenses";
 export default function page() {
-  const { expenses, loading } = useAuthExpenses();
-
+  const { expenses, loading: expensesLoading } = useAuthExpenses();
+  const { profile, loading: profileLoading } = useAuthProfile();
+  const loading = expensesLoading || profileLoading;
+  const currency = profile?.currency || "PHP";
   // Show skeletons while loading
   if (loading) {
     return (
@@ -42,16 +44,6 @@ export default function page() {
       </div>
     );
   }
-
-  // Compute analytics after loading
-  const mostFrequentCategory = getCategoryFrequency(expenses);
-  const totalExpenses = getTotalExpenses(expenses);
-  const avgDailySpend = getDailyAvgSpending(expenses).toFixed(2);
-
-  const categoryTotals = Object.entries(getTotalPerCategory(expenses)).map(
-    ([category, amount]) => ({ category, amount })
-  );
-
   // Empty state if no expenses after loading
   if (!expenses || expenses.length === 0) {
     return (
@@ -66,32 +58,49 @@ export default function page() {
       </Empty>
     );
   }
+  // Compute analytics after loading
+  const mostFrequentCategory = getCategoryFrequency(expenses);
+  const totalExpenses = getTotalExpenses(expenses);
+  const avgDailySpend = getDailyAvgSpending(expenses).toFixed(2);
+
+  const categoryTotals = Object.entries(getTotalPerCategory(expenses)).map(
+    ([category, amount]) => ({ category, amount })
+  );
 
   return (
     <div>
       <h1 className="text-3xl font-semibold">Analytics</h1>
       <span className="text-neutral-500">Visualize your spending patterns</span>
 
+      {/* Stat Cards */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
         <StatCard
           title="Total Expenses"
-          value={`$${totalExpenses}`}
+          currency={currency}
+          value={totalExpenses}
           icon={<DollarSign className="text-accent" />}
         />
+
         <StatCard
           title="Top Category"
-          value={`${mostFrequentCategory}`}
+          value={mostFrequentCategory}
           icon={<TrendingUp className="text-accent" />}
         />
+
         <StatCard
           title="Avg Daily Spend"
-          value={`$${avgDailySpend}`}
+          currency={currency}
+          value={avgDailySpend}
           icon={<Calendar className="text-accent" />}
         />
       </div>
 
+      {/* Charts */}
       <section className="grid w-full grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-        <ChartPieLabelCustom data={categoryTotals} />
+        <ChartPieLabelCustom
+          currency={profile?.currency ?? "PHP"}
+          data={categoryTotals}
+        />
         <ChartLineLinear data={expenses} />
       </section>
     </div>

@@ -15,6 +15,7 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from "@/components/ui/chart";
+import { getCurrencySymbol } from "@/lib/utils";
 
 type ChartPieLabelCustomProps = {
   data: {
@@ -22,6 +23,7 @@ type ChartPieLabelCustomProps = {
     amount: number;
     fill?: string;
   }[];
+  currency?: string;
 };
 
 const defaultColors = [
@@ -36,8 +38,10 @@ const defaultColors = [
   "#F97316",
 ];
 
-export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
-  // ChartConfig only needs label for tooltip / container
+export function ChartPieLabelCustom({
+  data,
+  currency = "PHP", // fallback currency
+}: ChartPieLabelCustomProps) {
   const chartConfig: ChartConfig = {
     pie: { label: "Spending" },
   };
@@ -56,31 +60,35 @@ export function ChartPieLabelCustom({ data }: ChartPieLabelCustomProps) {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <ChartTooltip
-                content={
-                  <ChartTooltipContent nameKey="amount" hideLabel={false} />
+                formatter={(value: number) =>
+                  `${getCurrencySymbol(currency)}${value.toFixed(2)}`
                 }
               />
               <Pie
-                key={data.map((d) => d.amount).join("-")}
                 data={data}
-                dataKey="amount" // directly here, NOT in chartConfig
-                nameKey="category" // directly here, NOT in chartConfig
+                dataKey="amount"
+                nameKey="category"
                 labelLine={false}
-                isAnimationActive={true}
-                animationDuration={800}
-                animationEasing="ease-out"
-                label={({ payload, ...props }) => (
+                label={({
+                  payload,
+                  index,
+                  x,
+                  y,
+                  textAnchor,
+                  dominantBaseline,
+                }) => (
                   <text
-                    x={props.x}
-                    y={props.y}
-                    textAnchor={props.textAnchor}
-                    dominantBaseline={props.dominantBaseline}
+                    x={x}
+                    y={y}
+                    textAnchor={textAnchor}
+                    dominantBaseline={dominantBaseline}
                     fill={
                       payload.fill ||
-                      defaultColors[props.index % defaultColors.length]
+                      defaultColors[index % defaultColors.length]
                     }
                   >
-                    ${payload.amount.toFixed(2)}
+                    {getCurrencySymbol(currency)}
+                    {payload.amount.toFixed(2)}
                   </text>
                 )}
               >

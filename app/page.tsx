@@ -1,11 +1,6 @@
 "use client";
-import { useExpensesStore } from "@/store/expenseStore";
 import { Button } from "@/components/ui/button";
 import RecentExpenses from "@/components/RecentExpenses";
-import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
-import { getExpenses } from "@/lib/supabase/expenses";
-import { useAuthExpenses } from "@/hooks/useAuthExpenses";
 import {
   Card,
   CardHeader,
@@ -17,6 +12,10 @@ import Link from "next/link";
 import { Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { filterLastMonthExpenses, getTotalExpenses } from "@/lib/expenses";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCurrencySymbol } from "@/lib/utils";
+import { useExpensesStore } from "@/store/expenseStore";
+import { useAuthProfile } from "@/hooks/useAuthExpenses";
+import { useAuthExpenses } from "@/hooks/useAuthExpenses";
 
 export type StatCardProps = {
   title: string;
@@ -24,6 +23,7 @@ export type StatCardProps = {
   icon: React.ReactNode;
   footer?: string;
   loading?: boolean;
+  currency?: string;
 };
 
 export function StatCard({
@@ -32,6 +32,7 @@ export function StatCard({
   icon,
   footer,
   loading,
+  currency,
 }: StatCardProps) {
   if (loading) {
     return <Skeleton className="w-full h-36 rounded-md" />;
@@ -45,7 +46,10 @@ export function StatCard({
           {icon}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-3xl font-bold">{value}</CardContent>
+      <CardContent className="text-3xl font-bold">
+        {getCurrencySymbol(currency)}
+        {value}
+      </CardContent>
       {footer && (
         <CardFooter className="text-neutral-500 mt-2">{footer}</CardFooter>
       )}
@@ -54,11 +58,15 @@ export function StatCard({
 }
 
 export default function Home() {
-  const { expenses, loading } = useAuthExpenses();
+  const { expenses, loading: expensesLoading } = useAuthExpenses();
+  const { profile, loading: profileLoading } = useAuthProfile();
 
   const totalExpenses = getTotalExpenses(expenses);
   const lastMonthExpenses = filterLastMonthExpenses(expenses);
   const totalLastMonth = getTotalExpenses(lastMonthExpenses);
+  const currency = useExpensesStore((state) => state.currency) || "PHP";
+
+  const loading = profileLoading;
 
   // Array for rendering skeleton StatCards
   const skeletonCards = Array(3).fill(0);
@@ -97,13 +105,15 @@ export default function Home() {
           <>
             <StatCard
               title="Total Expenses"
-              value={`$${totalExpenses}`}
+              currency={currency}
+              value={totalExpenses}
               icon={<DollarSign className="text-accent" />}
               footer="All-time spending"
             />
             <StatCard
               title="Last Month"
-              value={`$${totalLastMonth}`}
+              currency={currency}
+              value={totalLastMonth}
               icon={<TrendingUp className="text-accent" />}
               footer="Previous month spending"
             />
@@ -126,7 +136,7 @@ export default function Home() {
             <Skeleton className="h-12 w-full rounded-md" />
           </div>
         ) : (
-          <RecentExpenses loading={loading} />
+          <RecentExpenses loading={loading} currency={currency} />
         )}
       </section>
     </div>

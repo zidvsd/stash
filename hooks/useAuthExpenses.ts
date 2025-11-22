@@ -4,7 +4,7 @@ import { useExpensesStore } from "@/store/expenseStore";
 import { getExpenses } from "@/lib/supabase/expenses";
 import { useRouter } from "next/navigation";
 import { Profile } from "@/lib/types/profile";
-import { useProfileStore } from "@/store/useProfileStore";
+import { useProfileStore } from "@/store/profileStore";
 export function useAuth() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -73,6 +73,11 @@ export function useAuthProfile() {
       console.error("Error fetching profile:", error.message);
     } else {
       setProfile(data ?? null); // update global store
+
+      // set currency to store
+      if (data?.currency) {
+        useExpensesStore.getState().setCurrency(data.currency);
+      }
     }
     setLoading(false);
   };

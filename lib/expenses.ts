@@ -5,11 +5,16 @@ export function filterLastMonthExpenses(
   expenses: { created_at: string; amount: number }[]
 ) {
   const today = new Date();
-  const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const year = today.getFullYear();
+  const month = today.getMonth(); // 0-indexed, current month
+  // start of last month
+  const startLastMonth = new Date(year, month - 1, 1);
+  // end of last month
+  const endLastMonth = new Date(year, month, 0, 23, 59, 59, 999);
 
   return expenses.filter((expense) => {
     const expenseDate = new Date(expense.created_at); // ISO → Date
-    return expenseDate >= thirtyDaysAgo && expenseDate <= today;
+    return expenseDate >= startLastMonth && endLastMonth <= endLastMonth;
   });
 }
 // filter last 7

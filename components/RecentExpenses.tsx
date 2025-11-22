@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderMinus, Trash2, Pencil } from "lucide-react"; // Trash2 for delete action
+import { FolderMinus, Trash2, Pencil, Currency } from "lucide-react"; // Trash2 for delete action
 import {
   Empty,
   EmptyDescription,
@@ -26,12 +26,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { deleteExpense } from "@/lib/supabase/expenses";
-
+import { getCurrencySymbol, truncateText } from "@/lib/utils";
 type RecentExpensesProps = {
   loading?: boolean;
+  currency?: string;
 };
 
-export default function RecentExpenses({ loading }: RecentExpensesProps) {
+export default function RecentExpenses({
+  loading,
+  currency = "PHP",
+}: RecentExpensesProps) {
   const { expenses, removeExpense } = useExpensesStore();
   const router = useRouter();
   const handleDeleteExpense = async (id: string) => {
@@ -134,10 +138,13 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
                       </span>
                     </td>
 
-                    <td className="px-4 py-3">{expense.note || "-"}</td>
+                    <td className="px-4 py-3">
+                      {truncateText(expense.note ?? "", 50) || "-"}
+                    </td>
 
                     <td className="px-4 py-3 font-bold">
-                      ${expense.amount.toFixed(2)}
+                      {getCurrencySymbol(currency)}
+                      {expense.amount.toFixed(2)}
                     </td>
 
                     <td className="px-4 py-3 flex items-center gap-2">
@@ -196,7 +203,8 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
                 {/* Top Row */}
                 <div className="flex justify-between items-center mb-3">
                   <span className="text-lg font-bold">
-                    ${expense.amount.toFixed(2)}
+                    {getCurrencySymbol(currency)}
+                    {expense.amount.toFixed(2)}
                   </span>
                   <div className="flex gap-1.5">
                     <Button
@@ -236,8 +244,8 @@ export default function RecentExpenses({ loading }: RecentExpensesProps) {
                 </div>
 
                 {/* Note */}
-                <div className="text-sm text-gray-700 dark:text-gray-300">
-                  {expense.note || null}
+                <div className="max-w-1/2 wrap-break-word text-gray-700 dark:text-gray-300">
+                  {truncateText(expense.note ?? "", 50) || null}
                 </div>
               </div>
             ))}

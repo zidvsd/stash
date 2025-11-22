@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { DarkModeToggle } from "../DarkModeToggle";
 import { useExpensesStore } from "@/store/expenseStore";
-import { useProfileStore } from "@/store/useProfileStore";
+import { useProfileStore } from "@/store/profileStore";
 export default function Sidebar({
   isCollapsed = false,
   toggleCollapse,

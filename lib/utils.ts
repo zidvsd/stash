@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { currencies } from "./currencies";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -34,4 +35,17 @@ export function capitalizeTwoWords(name: string) {
     .slice(0, 2)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
+}
+
+// convert currency code to symbol
+
+export function getCurrencySymbol(code: string) {
+  const currency = currencies.find((c) => c.code === code);
+  return currency ? currency.symbol : code;
+}
+export function truncateText(note: string | undefined, maxLength: number) {
+  if (!note) return "";
+  if (note.length <= maxLength) return note;
+
+  return note.slice(0, maxLength) + "...";
 }

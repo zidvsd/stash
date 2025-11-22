@@ -28,7 +28,7 @@ export default function UpdateExpenseForm() {
 
   const { updateExpense: updateLocal } = useExpensesStore();
 
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState<number | "">("");
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
 
@@ -42,6 +42,10 @@ export default function UpdateExpenseForm() {
 
   const handleUpdateExpense = async () => {
     if (!matchItem) return;
+    if (amount === "" || amount < 0) {
+      toast.error("Please enter a valid amount.");
+      return;
+    }
     try {
       const updatedExpense = { ...matchItem, amount, category, note };
       const data = await updateSupabaseExpense(updatedExpense);
@@ -90,7 +94,7 @@ export default function UpdateExpenseForm() {
           min={0}
           value={amount}
           onChange={(e) =>
-            setAmount(e.target.value === "" ? 0 : Number(e.target.value))
+            setAmount(e.target.value === "" ? "" : Number(e.target.value))
           }
           placeholder="Enter amount"
           className="mt-2"
