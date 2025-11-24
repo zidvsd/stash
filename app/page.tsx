@@ -122,7 +122,11 @@ export default function Home() {
       </div>
       {/* monthly budget */}
       <div className="mt-4">
-        <MonthlyBudget expenses={expenses} currency={currency} />
+        {loading ? (
+          <Skeleton className="h-32 w-full" />
+        ) : (
+          <MonthlyBudget expenses={expenses} currency={currency} />
+        )}
       </div>
 
       {/* Stats Cards */}
