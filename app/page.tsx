@@ -9,7 +9,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { Calendar, DollarSign, TrendingUp } from "lucide-react";
+import { Calendar, DollarSign, TrendingDown } from "lucide-react";
 import { filterLastMonthExpenses, getTotalExpenses } from "@/lib/expenses";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrencySymbol } from "@/lib/utils";
@@ -17,6 +17,7 @@ import { useExpensesStore } from "@/store/expenseStore";
 import { useAuthProfile } from "@/hooks/useAuthExpenses";
 import { useAuthExpenses } from "@/hooks/useAuthExpenses";
 import { useAuth } from "@/hooks/useAuthExpenses";
+import MonthlyBudget from "@/components/MonthlyBudget";
 export type StatCardProps = {
   title: string;
   value?: string | number;
@@ -97,6 +98,7 @@ export default function Home() {
   return (
     <div className="pt-4">
       {/* Header */}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex flex-col">
           <h1 className="text-3xl font-semibold">
@@ -110,12 +112,17 @@ export default function Home() {
             )}
           </span>
         </div>
+
         <Link href="/add-expense">
           <Button className="flex items-center gap-2" variant="accent">
             <span className="text-2xl">+</span>
             Add Expense
           </Button>
         </Link>
+      </div>
+      {/* monthly budget */}
+      <div className="mt-4">
+        <MonthlyBudget expenses={expenses} currency={currency} />
       </div>
 
       {/* Stats Cards */}
@@ -139,7 +146,7 @@ export default function Home() {
               currency={currency}
               value={totalLastMonth}
               isCurrency={true}
-              icon={<TrendingUp className="text-accent" />}
+              icon={<TrendingDown className="text-accent" />}
               footer="Previous month spending"
             />
             <StatCard

@@ -19,7 +19,6 @@ import {
   getTotalPerCategory,
 } from "@/lib/expenses";
 import { useAuthProfile, useAuth } from "@/hooks/useAuthExpenses";
-
 export default function page() {
   const { user } = useAuth();
   const { expenses, loading: expensesLoading } = useAuthExpenses(user);
@@ -27,6 +26,7 @@ export default function page() {
   const loading = expensesLoading || profileLoading;
   const currency = profile?.currency || "PHP";
   // Show skeletons while loading
+
   if (loading) {
     return (
       <div>
@@ -73,7 +73,6 @@ export default function page() {
     <div>
       <h1 className="text-3xl font-semibold">Analytics</h1>
       <span className="text-neutral-500">Visualize your spending patterns</span>
-
       {/* Stat Cards */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
         <StatCard
