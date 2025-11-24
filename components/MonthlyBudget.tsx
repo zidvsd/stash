@@ -37,21 +37,21 @@ export default function MonthlyBudget({
       </CardHeader>
 
       <CardContent className="space-y-2 w-full">
-        <div className="flex items-center w-full justify-between">
+        <div className="flex flex-col md:flex-row items-start md:items-center w-full justify-between">
           <span className="text-sm text-neutral-600 dark:text-gray-400">
             Spent this month
           </span>
           <p className=" ">
             {getCurrencySymbol(currency)}
-            {totalThisMonth} / {getCurrencySymbol(currency)}
-            {monthlyBudget}
+            {totalThisMonth.toFixed(2)} / {getCurrencySymbol(currency)}
+            {monthlyBudget.toFixed(2)}
           </p>
         </div>
 
         <Progress value={percentage} />
 
         <p className="text-sm text-neutral-500">
-          {percentage.toFixed(1)}% used
+          {percentage.toFixed(2)}% used
         </p>
       </CardContent>
     </Card>

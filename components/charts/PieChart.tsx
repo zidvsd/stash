@@ -69,28 +69,32 @@ export function ChartPieLabelCustom({
                 dataKey="amount"
                 nameKey="category"
                 labelLine={false}
-                label={({
-                  payload,
-                  index,
-                  x,
-                  y,
-                  textAnchor,
-                  dominantBaseline,
-                }) => (
-                  <text
-                    x={x}
-                    y={y}
-                    textAnchor={textAnchor}
-                    dominantBaseline={dominantBaseline}
-                    fill={
-                      payload.fill ||
-                      defaultColors[index % defaultColors.length]
-                    }
-                  >
-                    {getCurrencySymbol(currency)}
-                    {payload.amount.toFixed(2)}
-                  </text>
-                )}
+                label={
+                  typeof window !== "undefined" && window.innerWidth > 500
+                    ? ({
+                        payload,
+                        index,
+                        x,
+                        y,
+                        textAnchor,
+                        dominantBaseline,
+                      }) => (
+                        <text
+                          x={x}
+                          y={y}
+                          textAnchor={textAnchor}
+                          dominantBaseline={dominantBaseline}
+                          fill={
+                            payload.fill ||
+                            defaultColors[index % defaultColors.length]
+                          }
+                        >
+                          {getCurrencySymbol(currency)}
+                          {payload.amount.toFixed(2)}
+                        </text>
+                      )
+                    : false
+                }
               >
                 {data.map((entry, index) => (
                   <Cell
