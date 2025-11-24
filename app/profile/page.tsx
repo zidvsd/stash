@@ -146,7 +146,7 @@ export default function Page() {
               <User className="text-accent w-5 h-5" />
               <h1 className="text-2xl font-semibold">Personal Information</h1>
             </div>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-gray-700 dark:text-gray-400">
               Update your profile details
             </span>
           </CardHeader>
@@ -157,7 +157,7 @@ export default function Page() {
             </div>
             <div className="flex flex-col gap-1">
               <h2 className="font-medium">Profile Picture</h2>
-              <span className="text-sm text-neutral-500">
+              <span className="text-sm text-neutral-500 dark:text-gray-500">
                 Avatar based on your initials
               </span>
             </div>
@@ -172,7 +172,7 @@ export default function Page() {
               placeholder={profile?.email || "Johndoe@gmail.com"}
               className="bg-gray-100 font-light"
             />
-            <span className="text-sm font-light text-gray-400">
+            <span className="text-sm  text-gray-600 dark:text-gray-400 ">
               Email cannot be changed
             </span>
           </CardContent>
@@ -184,10 +184,10 @@ export default function Page() {
               name="name"
               value={form.name}
               placeholder="John Doe"
-              className="font-light"
+              className="font-medium"
               onChange={handleChange}
             />
-            <span className="text-sm font-light text-gray-400">
+            <span className="text-sm  text-gray-600 dark:text-gray-400">
               Update your display name
             </span>
           </CardContent>
@@ -204,7 +204,7 @@ export default function Page() {
               <Settings className="text-accent w-5 h-5" />
               <h1 className="text-2xl font-semibold">Preferences</h1>
             </div>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               Customize your experience
             </span>
           </CardHeader>
@@ -245,7 +245,7 @@ export default function Page() {
               <DollarSign className="text-accent w-5 h-5" />
               <h1 className="text-2xl font-semibold">Budget & Goals</h1>
             </div>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               Set your financial targets
             </span>
           </CardHeader>
@@ -261,7 +261,7 @@ export default function Page() {
               }
               placeholder="5000"
             />
-            <span className="text-sm font-light text-gray-400">
+            <span className="text-sm font-light text-gray-600 dark:text-gray-400">
               Set a monthly spending limit to track your expenses
             </span>
           </CardContent>
@@ -296,7 +296,7 @@ export default function Page() {
               }
               className="bg-gray-100 font-light"
             />
-            <span className="text-sm font-light text-gray-400">
+            <span className="text-sm font-light text-gray-600 dark:text-gray-400">
               The date this account was created
             </span>
           </CardContent>
