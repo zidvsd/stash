@@ -5,7 +5,7 @@ import { useProfileStore } from "@/store/profileStore";
 import { filterLastMonthExpenses, getTotalExpenses } from "@/lib/expenses";
 import { getCurrencySymbol } from "@/lib/utils";
 import { Expense } from "@/lib/types/expense";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, TriangleAlert } from "lucide-react";
 type MonthlyBudgetProps = {
   expenses: Expense[];
   currency: string;
@@ -21,7 +21,7 @@ export default function MonthlyBudget({
 
   const thisMonthExpenses = filterLastMonthExpenses(expenses);
   const totalThisMonth = Number(getTotalExpenses(thisMonthExpenses));
-
+  const exceededAmount = totalThisMonth - monthlyBudget;
   const percentage =
     monthlyBudget > 0
       ? Math.min((totalThisMonth / monthlyBudget) * 100, 100)
@@ -49,10 +49,23 @@ export default function MonthlyBudget({
         </div>
 
         <Progress value={percentage} />
-
-        <p className="text-sm text-neutral-500">
-          {percentage.toFixed(2)}% used
-        </p>
+        {totalThisMonth > monthlyBudget ? (
+          <div className="flex gap-4 items-center text-destructive border border-destructive rounded-xl p-4  mt-4 ">
+            <TriangleAlert className="" />
+            <div className="flex flex-col gap-2">
+              <p className="text-destructive text-lg">Budget Exceeded!</p>
+              <p className="text-sm">
+                You've exceeded your monthly budget by{" "}
+                {getCurrencySymbol(currency)}
+                {exceededAmount.toFixed(2)}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-neutral-500">
+            {percentage.toFixed(2)}% used
+          </p>
+        )}
       </CardContent>
     </Card>
   );
