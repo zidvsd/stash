@@ -1,9 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Stash — README</title>
 </head>
 <body>
   <header>
@@ -15,9 +14,7 @@
   </header>
   <section>
   <h2>Demo</h2>
-  <p>Live demo: https://your-demo-link.com</p>
-  <p><em>Screenshots below:</em></p>
-  <img src="your-screenshot-example.png" alt="Dashboard preview">
+  <p>https://stash-lemon.vercel.app/</p>
 </section>
   <main>
     <section>
