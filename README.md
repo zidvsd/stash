@@ -4,18 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Stash — README</title>
-  <style>
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:32px;line-height:1.6;color:#0f172a}
-    header h1{margin:0 0 8px 0;font-size:28px}
-    .badge{display:inline-block;background:#2563eb;color:#fff;padding:4px 10px;border-radius:6px;font-size:12px}
-    h2{margin-top:28px}
-    pre{background:#0f172a;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto}
-    code{background:#f1f5f9;padding:2px 6px;border-radius:6px}
-    .note{background:#f8fafc;border-left:4px solid #e2e8f0;padding:10px;border-radius:6px}
-    ul{margin:8px 0 12px 20px}
-    footer{margin-top:36px;color:#64748b;font-size:13px}
-    .muted{color:#64748b}
-  </style>
 </head>
 <body>
   <header>
@@ -25,6 +13,12 @@
     <p class="muted"><strong>Tech stack</strong>: Next.js 16 · React 19 · Tailwind CSS 4 · Supabase · Recharts · Zustand</p>
     <hr />
   </header>
+  <section>
+  <h2>Demo</h2>
+  <p>Live demo: https://your-demo-link.com</p>
+  <p><em>Screenshots below:</em></p>
+  <img src="your-screenshot-example.png" alt="Dashboard preview">
+</section>
   <main>
     <section>
       <h2>What this project does</h2>
